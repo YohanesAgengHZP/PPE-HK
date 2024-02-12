@@ -1,0 +1,15 @@
+*.pyc
+*.pyo
+__pycache__
+.pytest_cache/
+.vscode/
+.env
+.env.*
+secrets.json
+build/
+dist/
+*.egg-info/
+.DS_Store
+Thumbs.db
+.idea/
+*.log
