@@ -25,7 +25,7 @@ async def create_employee(new_employee: EmployeeCreate, db: Session = Depends(ge
     return create(new_employee, db)
 
 
-@router.update("/{employee_id}")
+@router.put("/{employee_id}")
 async def update_employee(
     employee_id: UUID, updated_employee: EmployeeUpdate, db: Session = Depends(get_db)
 ):
