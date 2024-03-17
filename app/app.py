@@ -5,9 +5,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import api
+from app.core.database import engine
+from app.core.models import Base
 
 
 load_dotenv()
+
+# Initialize all database table
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
