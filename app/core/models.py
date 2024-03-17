@@ -29,7 +29,7 @@ class Employee(Base):
     id: Mapped[Uuid] = mapped_column(
         Uuid,
         primary_key=True,
-        server_default=text(""),
+        server_default=text("uuid_generate_v4()"),
         doc="Employee ID",
     )
     name: Mapped[str] = mapped_column(
