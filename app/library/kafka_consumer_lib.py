@@ -1,7 +1,9 @@
-import os
 import asyncio
+import os
+
 from dotenv import load_dotenv
 from kafka import KafkaConsumer
+
 
 load_dotenv()
 lock = asyncio.Lock()
@@ -24,4 +26,10 @@ async def process_message(msg, camera_id_ws, websocket_connections):
     if camera_id == camera_id_ws:
         encoded_frame = msg.value
         async with lock:
-            await asyncio.gather(*[connection[1].send_bytes(encoded_frame) for connection in websocket_connections if connection[0] == camera_id])
+            await asyncio.gather(
+                *[
+                    connection[1].send_bytes(encoded_frame)
+                    for connection in websocket_connections
+                    if connection[0] == camera_id
+                ]
+            )

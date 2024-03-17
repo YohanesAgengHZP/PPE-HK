@@ -1,16 +1,17 @@
-import os
-import asyncio
+# import asyncio
+
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from routes import routers, routers_ws
 from fastapi.middleware.cors import CORSMiddleware
-# from library.kafka_consumer_lib import consume_messages
+
+from app.api import api
+
 
 load_dotenv()
 
 app = FastAPI()
 
-origins = ['http://127.0.0.1:9090']
+origins = ["http://127.0.0.1:9090"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,12 +21,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Call Router
-app.include_router(routers.router)
-app.include_router(routers_ws.router)
+app.include_router(api.router)
 
-async def run_app():
-    await asyncio.gather(app())
 
-if __name__ == "__main__":
-    asyncio.run(run_app())
+# async def run_app():
+#     await asyncio.gather(app())
+
+
+# if __name__ == "__main__":
+#     asyncio.run(run_app())
