@@ -65,10 +65,9 @@ class EmployeeAttendance(Base):
     ### Variable:
     - id: Attendance ID
     - employee_id: The employee ID
-    - start: Employee start work date time
-    - end: Employee leave work date time
-    - start_photo: Photo taken when employee start work
-    - end_photo: Photo taken when employee leave work
+    - time: Employee attendance date time
+    - photo: Photo taken when employee has start or leave work
+    - work_status: Work status, true for start work and false for leave work
     """
 
     __tablename__ = "employee_attendance"
@@ -83,25 +82,22 @@ class EmployeeAttendance(Base):
         nullable=False,
         doc="The employee ID",
     )
-    start: Mapped[Optional[datetime]] = mapped_column(
+    time: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
-        doc="Employee start work date time",
+        doc="Employee attendance date time",
     )
-    end: Mapped[Optional[datetime]] = mapped_column(
-        DateTime(timezone=True),
-        doc="Employee leave work date time",
-    )
-    start_photo: Mapped[Optional[str]] = mapped_column(
+    photo: Mapped[Optional[str]] = mapped_column(
         String,
-        doc="Photo taken when employee start work",
+        doc="Photo taken when employee has start or leave work",
     )
-    end_photo: Mapped[Optional[str]] = mapped_column(
-        String,
-        doc="Photo taken when employee leave work",
+    work_status: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        server_default=text("true"),
+        doc="Work status, true for start work and false for leave work",
     )
 
     def __repr__(self) -> str:
         time_format = "%d %b %Y %H:%M:%S"
-        start_string = datetime.strftime(self.start, time_format)
-        end_string = datetime.strftime(self.end, time_format)
-        return f"EmployeeAttendance(id={self.id!r}, employee_id={self.employee_id!r}, start={start_string}, end={end_string})"
+        time = datetime.strftime(self.time, time_format)
+        return f"EmployeeAttendance(id={self.id!r}, employee_id={self.employee_id!r}, time={time}, work_status={self.work_status})"

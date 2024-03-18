@@ -5,10 +5,9 @@ from uuid import UUID
 
 class AttendanceBase(BaseModel):
     employee_id: UUID
-    start: datetime
-    end: datetime
-    start_photo: str
-    end_photo: str
+    time: datetime
+    photo: str
+    work_status: bool
 
 
 class AttendanceResponse(AttendanceBase):

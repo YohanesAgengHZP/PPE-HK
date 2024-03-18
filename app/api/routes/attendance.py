@@ -23,10 +23,9 @@ async def create_attendance(
 ):
     attendance = EmployeeAttendance()
     attendance.employee_id = new_attendance.employee_id
-    attendance.start = new_attendance.start
-    attendance.end = new_attendance.end
-    attendance.start_photo = new_attendance.start_photo
-    attendance.end_photo = new_attendance.end_photo
+    attendance.time = new_attendance.time
+    attendance.photo = new_attendance.photo
+    attendance.work_status = new_attendance.work_status
 
     db.add(attendance)
     db.commit()
