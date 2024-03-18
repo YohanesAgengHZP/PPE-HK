@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 
-router = APIRouter(prefix="/attendance", tags=["Employee", "Attendance"])
+router = APIRouter(prefix="/attendance", tags=["Attendance"])
 
 
 # TODO: Implement get all attendance function

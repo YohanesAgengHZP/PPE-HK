@@ -15,7 +15,7 @@ router.include_router(camera.router)
 router.include_router(employee.router)
 
 
-@router.get("/", response_class=PlainTextResponse, tags="Check")
+@router.get("/", response_class=PlainTextResponse, tags=["Check"])
 def check():
     """Give response if server is up."""
     return """
