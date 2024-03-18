@@ -3,14 +3,18 @@ from uuid import UUID
 
 
 class EmployeeBase(BaseModel):
-    id: UUID
-
-
-class EmployeeCreate(EmployeeBase):
     name: str
     company: str
     mcu: bool
     photo: str
+
+
+class EmployeeResponse(EmployeeBase):
+    id: UUID
+
+
+class EmployeeCreate(EmployeeBase):
+    pass
 
 
 class EmployeeUpdate(EmployeeBase):

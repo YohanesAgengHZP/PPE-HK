@@ -29,7 +29,7 @@ def create(employee: Employee, db: Session) -> UUID:
     db.add(employee)
     db.commit()
 
-    return employee.id
+    return employee
 
 
 # TODO: Implement the update function

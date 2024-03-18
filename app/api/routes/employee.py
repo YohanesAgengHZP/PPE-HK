@@ -1,37 +1,45 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from typing import List
 from uuid import UUID
 
 from app.api.dependencies import get_db
-from app.api.models.employee import EmployeeCreate, EmployeeUpdate
+from app.api.models.employee import EmployeeCreate, EmployeeResponse, EmployeeUpdate
 from app.api.services.employee import get_all, get_by_id, create, update, delete
+from app.core.models import Employee
 
 
 router = APIRouter(prefix="/employee", tags=["Employee"])
 
 
-@router.get("")
+@router.get("", response_model=List[EmployeeResponse])
 async def get_all_employee(db: Session = Depends(get_db)):
     return get_all(db)
 
 
-@router.get("/{employee_id}")
+@router.get("/{employee_id}", response_model=EmployeeResponse)
 async def get_employee(employee_id: UUID, db: Session = Depends(get_db)):
     return get_by_id(employee_id, db)
 
 
-@router.post("", status_code=201)
+@router.post("", status_code=201, response_model=EmployeeResponse)
 async def create_employee(new_employee: EmployeeCreate, db: Session = Depends(get_db)):
-    return create(new_employee, db)
+    employee = Employee()
+    employee.name = new_employee.name
+    employee.company = new_employee.company
+    employee.mcu = new_employee.mcu
+    employee.photo = new_employee.photo
+
+    return create(employee, db)
 
 
-@router.put("/{employee_id}")
+@router.put("/{employee_id}", response_model=EmployeeResponse)
 async def update_employee(
     employee_id: UUID, updated_employee: EmployeeUpdate, db: Session = Depends(get_db)
 ):
     return update(employee_id, updated_employee, db)
 
 
-@router.delete("/{employee_id}", status_code=204)
+@router.delete("/{employee_id}", status_code=204, response_model=None)
 async def delete_employee(employee_id: UUID, db: Session = Depends(get_db)):
     return delete(employee_id, db)
