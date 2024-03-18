@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.core.models import EmployeeAttendance
+from core.models import EmployeeAttendance
 
 
 def get_all(db: Session) -> List[EmployeeAttendance]:

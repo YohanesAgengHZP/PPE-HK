@@ -4,9 +4,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import api
-from app.core.database import engine
-from app.core.models import Base
+from api import api
+from core.database import engine
+from core.models import Base
 
 
 load_dotenv()

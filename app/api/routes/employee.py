@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
 
-from app.api.dependencies import get_db
-from app.api.models.employee import EmployeeCreate, EmployeeResponse, EmployeeUpdate
-from app.api.services.employee import get_all, get_by_id, create, update, delete
-from app.core.models import Employee
+from api.dependencies import get_db
+from api.models.employee import EmployeeCreate, EmployeeResponse, EmployeeUpdate
+from api.services.employee import get_all, get_by_id, create, update, delete
+from core.models import Employee
 
 
 router = APIRouter(prefix="/employee", tags=["Employee"])

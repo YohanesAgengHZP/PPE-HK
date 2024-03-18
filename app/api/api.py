@@ -5,7 +5,7 @@ Main API endpoint.
 from fastapi import APIRouter
 from fastapi.responses import PlainTextResponse
 
-from app.api.routes import attendance, camera, employee
+from api.routes import attendance, camera, employee
 
 
 router = APIRouter()

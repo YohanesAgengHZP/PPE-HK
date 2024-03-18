@@ -1,6 +1,6 @@
 from fastapi import APIRouter, WebSocket
 
-from app.library.kafka_consumer_lib import consume_messages
+from library.kafka_consumer_lib import consume_messages
 
 
 router = APIRouter(prefix="/camera", tags=["Camera"])
