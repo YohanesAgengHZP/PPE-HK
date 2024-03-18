@@ -9,7 +9,9 @@ load_dotenv()
 lock = asyncio.Lock()
 
 consumer = KafkaConsumer(
-    os.getenv("TOPIC_KAFKA"), bootstrap_servers=[os.getenv("KAFKA_URL")]
+    os.getenv("TOPIC_KAFKA"),
+    bootstrap_servers=[os.getenv("KAFKA_URL")],
+    api_version=(0, 10, 2),
 )
 
 
