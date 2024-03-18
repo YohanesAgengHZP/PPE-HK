@@ -1,10 +1,13 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.api.dependencies import get_db
+from app.api.services.attendance import get_all
 
 
 router = APIRouter(prefix="/attendance", tags=["Attendance"])
 
 
-# TODO: Implement get all attendance function
 @router.get("")
-async def get_all_attendance():
-    pass
+async def get_all_attendances(db: Session = Depends(get_db)):
+    return get_all(db)
