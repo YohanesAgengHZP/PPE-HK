@@ -1,9 +1,11 @@
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from typing import List
 
-from core.models import EmployeeAttendance
+from core.models import Employee, EmployeeAttendance
 
 
 def get_all(db: Session) -> List[EmployeeAttendance]:
     """Get all employees attendance."""
-    return db.query(EmployeeAttendance).all()
+    statement = select(Employee.name, EmployeeAttendance).join(EmployeeAttendance)
+    return db.execute(statement)

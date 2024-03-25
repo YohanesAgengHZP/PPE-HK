@@ -11,6 +11,7 @@ class AttendanceBase(BaseModel):
 
 
 class AttendanceResponse(AttendanceBase):
+    name: str
     id: int
 
 
