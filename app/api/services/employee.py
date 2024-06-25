@@ -8,11 +8,13 @@ from core.models import Employee
 
 def get_all(db: Session) -> List[Employee]:
     """Get all employees."""
+
     return db.query(Employee).all()
 
 
 def get_by_id(employee_id: UUID, db: Session) -> Employee:
     """Get an employee by ID."""
+
     employee: Employee = db.query(Employee).get(employee_id)
 
     if not employee:
@@ -26,6 +28,7 @@ def get_by_id(employee_id: UUID, db: Session) -> Employee:
 
 def create(employee: Employee, db: Session) -> UUID:
     """Create a new employee."""
+
     db.add(employee)
     db.commit()
 
@@ -35,6 +38,7 @@ def create(employee: Employee, db: Session) -> UUID:
 # TODO: Implement the update function
 def update(employee_id: UUID, updated_employee: Employee, db: Session) -> Employee:
     """Update an employee."""
+
     current_employee = db.query(Employee).get(employee_id)
 
     if not current_employee:
@@ -48,6 +52,7 @@ def update(employee_id: UUID, updated_employee: Employee, db: Session) -> Employ
 
 def delete(employee_id: UUID, db: Session) -> None:
     """Delete an employee."""
+
     employee = db.query(Employee).get(employee_id)
 
     if not employee:

@@ -1,5 +1,6 @@
 fastapi
+gunicorn
 kafka-python
-psycopg2-binary
+psycopg[binary]
 SQLAlchemy
 uvicorn[standard]

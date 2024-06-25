@@ -29,4 +29,5 @@ async def create_attendance(
 
     db.add(attendance)
     db.commit()
+
     return attendance

@@ -7,6 +7,7 @@ from core.models import Employee, EmployeeAttendance
 
 def get_all(db: Session) -> List[EmployeeAttendance]:
     """Get all employees attendance."""
+
     statement = select(
         EmployeeAttendance.id,
         EmployeeAttendance.employee_id,
@@ -16,4 +17,5 @@ def get_all(db: Session) -> List[EmployeeAttendance]:
         Employee.name,
     ).join(Employee)
     result = db.execute(statement)
+
     return [attendance._asdict() for attendance in result.all()]

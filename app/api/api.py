@@ -18,6 +18,7 @@ router.include_router(employee.router)
 @router.get("/", response_class=PlainTextResponse, tags=["Check"])
 def check():
     """Give response if server is up."""
+
     return """
  ______________________________
 < Hello, welcome to the server >
