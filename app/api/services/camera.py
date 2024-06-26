@@ -46,8 +46,11 @@ def update(camera_id: UUID, updated_camera: Camera, db: Session) -> Camera:
             detail=f"Camera with ID {camera_id} not found",
         )
 
-    updated_camera.id = current_camera.id
-    db.add(updated_camera)
+    current_camera.name = updated_camera.name
+    current_camera.url = updated_camera.url
+    current_camera.active = updated_camera.active
+    current_camera.tags = updated_camera.tags
+    db.add(current_camera)
     db.commit()
 
     return updated_camera
