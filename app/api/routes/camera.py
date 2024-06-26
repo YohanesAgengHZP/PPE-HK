@@ -45,7 +45,13 @@ async def create_camera(new_camera: CameraCreate, db: Session = Depends(get_db))
 async def update_camera(
     camera_id: UUID, updated_camera: CameraUpdate, db: Session = Depends(get_db)
 ):
-    return update(camera_id, updated_camera, db)
+    camera = Camera()
+    camera.name = updated_camera.name
+    camera.url = updated_camera.url
+    camera.active = updated_camera.active
+    camera.tags = updated_camera.tags
+
+    return update(camera_id, camera, db)
 
 
 @router.delete("/{camera_id}", status_code=204, response_model=None)
