@@ -1,6 +1,6 @@
 from fastapi import APIRouter, WebSocket, Depends
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Union
 from uuid import UUID
 
 from api.dependencies import get_db
@@ -21,8 +21,13 @@ websocket_connections = set()
 
 
 @router.get("", response_model=List[CameraResponse])
-async def get_all_camera(db: Session = Depends(get_db)):
-    return get_all(db)
+async def get_all_camera(
+    name: Union[str, None] = None,
+    tags: Union[list[str], None] = None,
+    active: Union[bool, None] = None,
+    db: Session = Depends(get_db),
+):
+    return get_all(name, tags, active, db)
 
 
 @router.get("/{camera_id}", response_model=CameraResponse)

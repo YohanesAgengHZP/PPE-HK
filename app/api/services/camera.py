@@ -1,15 +1,27 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Union
 from uuid import UUID
 
 from core.models import Camera
 
 
-def get_all(db: Session) -> List[Camera]:
-    """Get all cameras."""
+def get_all(
+    name: Union[str, None],
+    tags: Union[list[str], None],
+    active: Union[bool, None],
+    db: Session,
+) -> List[Camera]:
+    """Get all cameras. Filter are optional."""
 
-    return db.query(Camera).all()
+    query = db.query(Camera)
+    if name:
+        query = query.filter(Camera.name.like(f"\%{name}\%"))
+    if tags:
+        query = query.filter(Camera.tags.contains(tags))
+    if active is not None:
+        query = query.filter(Camera.active == active)
+    return query.all()
 
 
 def get_by_id(camera_id: UUID, db: Session) -> Camera:
