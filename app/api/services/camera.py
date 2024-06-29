@@ -16,9 +16,9 @@ def get_all(
 
     query = db.query(Camera)
     if name:
-        query = query.filter(Camera.name.like(f"\%{name}\%"))
-    if tags:
-        query = query.filter(Camera.tags.contains(tags))
+        query = query.filter(Camera.name.ilike(f"%{name}%"))
+    # if tags:
+    #     query = query.filter(Camera.tags.contains(str(tags)))
     if active is not None:
         query = query.filter(Camera.active == active)
     return query.all()

@@ -23,11 +23,12 @@ websocket_connections = set()
 @router.get("", response_model=List[CameraResponse])
 async def get_all_camera(
     name: Union[str, None] = None,
-    tags: Union[list[str], None] = None,
+    tags: Union[str, None] = None,
     active: Union[bool, None] = None,
     db: Session = Depends(get_db),
 ):
-    return get_all(name, tags, active, db)
+    tag_array = tags.split(",") if tags else None
+    return get_all(name, tag_array, active, db)
 
 
 @router.get("/{camera_id}", response_model=CameraResponse)
