@@ -175,7 +175,7 @@ class Report(Base):
     - people_without_ppe_id: ID of the people doing violation
     """
 
-    __tablename__ = "report"
+    __tablename__ = "reporting"
 
     id: Mapped[int] = mapped_column(
         Integer,
