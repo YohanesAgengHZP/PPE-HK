@@ -3,7 +3,16 @@ Database models.
 """
 
 from datetime import datetime
-from sqlalchemy import ARRAY, Boolean, DateTime, ForeignKey, Integer, Text, Uuid, text
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Text,
+    Uuid,
+    text,
+)
+from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from typing import Optional
 
@@ -147,3 +156,76 @@ class EmployeeAttendance(Base):
         time_format = "%d %b %Y %H:%M:%S"
         time = datetime.strftime(self.time, time_format)
         return f"EmployeeAttendance(id={self.id!r}, employee_id={self.employee_id!r}, time={time}, work_status={self.work_status})"
+
+
+class Report(Base):
+    """
+    Report violation table.
+
+    ### Variable:
+    - id: Report ID
+    - timestamp: Timestamp when the violation occured
+    - reason: Reason of the violation
+    - image_url: URL of the image when violation occured
+    - camera_name: Camera name where the violation is captured
+    - notes: Notes for the violation
+    - person_responsible: Name of the person responsible for handling the violation
+    - is_closed: Status for the vilation
+    - num_of_people: Number of people detected of violation
+    - people_without_ppe_id: ID of the people doing violation
+    """
+
+    __tablename__ = "report"
+
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        doc="Report ID",
+    )
+    timestamp: Mapped[datetime] = mapped_column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("now()"),
+        doc="Timestamp when the violation occured",
+    )
+    reason: Mapped[list[str]] = mapped_column(
+        ARRAY(Text),
+        nullable=False,
+        server_default=text("'{}'::text[]"),
+        doc="Reason of the violation",
+    )
+    image_url: Mapped[Optional[str]] = mapped_column(
+        Text,
+        doc="URL of the image when violation occured",
+    )
+    camera_name: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        doc="Camera name where the violation is captured",
+    )
+    notes: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        server_default=text("''::text"),
+        doc="Notes for the violation",
+    )
+    person_responsible: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        server_default=text("''::text"),
+        doc="Name of the person responsible for handling the violation",
+    )
+    is_closed: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        server_default=text("false"),
+        doc="Status for the vilation",
+    )
+    num_of_people: Mapped[Optional[int]] = mapped_column(
+        Integer,
+        doc="Number of people detected of violation",
+    )
+    people_without_ppe_id: Mapped[Optional[list[str]]] = mapped_column(
+        ARRAY(Text),
+        doc="ID of the people doing violation",
+    )

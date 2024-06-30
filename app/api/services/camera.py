@@ -38,7 +38,7 @@ def get_by_id(camera_id: UUID, db: Session) -> Camera:
     return camera
 
 
-def create(camera: Camera, db: Session) -> UUID:
+def create(camera: Camera, db: Session) -> Camera:
     """Create a new camera."""
 
     db.add(camera)
