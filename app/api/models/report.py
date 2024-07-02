@@ -1,18 +1,18 @@
 from datetime import datetime
 from pydantic import BaseModel
-from typing import Optional
+from typing import List, Optional
 
 
 class ReportBase(BaseModel):
     timestamp: datetime
-    reason: list[str]
+    reason: List[str]
     image_url: str
     camera_name: str
     notes: str
     person_responsible: str
     is_closed: bool
     num_of_people: int
-    people_without_ppe_id: list[str]
+    people_without_ppe_id: List[str]
 
 
 class ReportResponse(ReportBase):
@@ -20,11 +20,11 @@ class ReportResponse(ReportBase):
 
 
 class ReportCreate(BaseModel):
-    reason: list[str]
+    reason: List[str]
     image_url: Optional[str]
     camera_name: str
     num_of_people: Optional[int]
-    people_without_ppe_id: Optional[list[str]]
+    people_without_ppe_id: Optional[List[str]]
 
 
 class ReportUpdate(BaseModel):

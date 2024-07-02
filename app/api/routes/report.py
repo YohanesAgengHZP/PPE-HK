@@ -1,10 +1,11 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Union
 
 from api.dependencies import get_db
 from api.models.report import ReportCreate, ReportResponse, ReportUpdate
-from api.services.report import get_all, get_by_id, create, update
+from api.services.report import get_all, get_by_id, get_chart, create, update
 from core.models import Report
 
 
@@ -12,8 +13,25 @@ router = APIRouter(prefix="/report", tags=["Report"])
 
 
 @router.get("", response_model=List[ReportResponse])
-async def get_all_report(db: Session = Depends(get_db)):
-    return get_all(db)
+async def get_all_report(
+    search: Union[List[str], None] = None,
+    start: Union[datetime, None] = None,
+    end: Union[datetime, None] = None,
+    limit: int = 10,
+    page: int = 1,
+    db: Session = Depends(get_db),
+):
+    return get_all(search, start, end, limit, page, db)
+
+
+# TODO: Add response_model
+@router.get("")
+async def get_report_chart(
+    start: Union[datetime, None] = None,
+    end: Union[datetime, None] = None,
+    db: Session = Depends(get_db),
+):
+    return get_chart(start, end, db)
 
 
 @router.get("/{report_id}", response_model=ReportResponse)
