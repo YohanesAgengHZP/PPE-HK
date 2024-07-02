@@ -14,7 +14,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from typing import Optional
+from typing import List, Optional
 
 
 class Base(DeclarativeBase):
@@ -57,7 +57,7 @@ class Camera(Base):
         server_default=text("false"),
         doc="Camera active status",
     )
-    tags: Mapped[list[str]] = mapped_column(
+    tags: Mapped[List[str]] = mapped_column(
         ARRAY(Text),
         server_default=text("'{}'::text[]"),
         doc="Tags that are assigned to the camera",
@@ -188,7 +188,7 @@ class Report(Base):
         server_default=text("now()"),
         doc="Timestamp when the violation occured",
     )
-    reason: Mapped[list[str]] = mapped_column(
+    reason: Mapped[List[str]] = mapped_column(
         ARRAY(Text),
         nullable=False,
         server_default=text("'{}'::text[]"),
@@ -225,7 +225,7 @@ class Report(Base):
         Integer,
         doc="Number of people detected of violation",
     )
-    people_without_ppe_id: Mapped[Optional[list[str]]] = mapped_column(
+    people_without_ppe_id: Mapped[Optional[List[str]]] = mapped_column(
         ARRAY(Text),
         doc="ID of the people doing violation",
     )

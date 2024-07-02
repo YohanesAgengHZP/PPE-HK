@@ -8,7 +8,7 @@ from core.models import Camera
 
 def get_all(
     name: Union[str, None],
-    tags: Union[list[str], None],
+    tags: Union[List[str], None],
     active: Union[bool, None],
     db: Session,
 ) -> List[Camera]:
