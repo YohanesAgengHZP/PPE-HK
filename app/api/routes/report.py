@@ -25,7 +25,7 @@ async def get_all_report(
 
 
 # TODO: Add response_model
-@router.get("")
+@router.get("/chart")
 async def get_report_chart(
     start: Union[datetime, None] = None,
     end: Union[datetime, None] = None,
