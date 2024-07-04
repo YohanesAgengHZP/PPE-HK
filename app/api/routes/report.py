@@ -1,7 +1,7 @@
 from datetime import datetime
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import List, Union
+from typing import List, Literal, Union
 
 from api.dependencies import get_db
 from api.models.report import ReportCreate, ReportResponse, ReportUpdate
@@ -12,16 +12,22 @@ from core.models import Report
 router = APIRouter(prefix="/report", tags=["Report"])
 
 
-@router.get("", response_model=List[ReportResponse])
+@router.get(
+    "",
+    description="Get all reports. Type are prioritized over reasons.",
+    response_model=List[ReportResponse],
+)
 async def get_all_report(
-    search: Union[List[str], None] = None,
+    type: Union[Literal["ppe", "animal", "danger"] | None] = None,
+    reasons: Union[str, None] = None,
     start: Union[datetime, None] = None,
     end: Union[datetime, None] = None,
     limit: int = 10,
     page: int = 1,
     db: Session = Depends(get_db),
 ):
-    return get_all(search, start, end, limit, page, db)
+    reason_array = reasons.split(",") if reasons else None
+    return get_all(type, reason_array, start, end, limit, page, db)
 
 
 # TODO: Add response_model

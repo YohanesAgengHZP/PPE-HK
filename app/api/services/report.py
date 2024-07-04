@@ -2,26 +2,39 @@ from datetime import datetime
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
-from typing import List, Union
+from typing import List, Literal, Union
 from uuid import UUID
 
 from core.models import Report
 
 
+PPE_CLASS_NAME_LIST = ["NO-Hardhat", "NO-Safety Shoes", "NO-Safety Vest"]
+DANGER_CLASS_NAME_LIST = ["Fire", "Puddle", "Smoke", "Smoking"]
+
+
 def get_all(
-    search: Union[List[str], None],
+    type: Union[Literal["ppe", "animal", "danger"] | None],
+    reasons: Union[List[str], None],
     start: Union[datetime, None],
     end: Union[datetime, None],
     limit: int,
     page: int,
     db: Session,
 ) -> List[Report]:
-    """Get all reports. Filter are optional."""
+    """Get all reports. Filter are optional. Type are prioritized over reasons."""
 
     query = db.query(Report)
 
-    if search:
-        query = query.filter(Report.reason.any(search))
+    if type:
+        match type:
+            # case "animal":
+            #     query = query.filter(Report.reason.overlap([""]))
+            case "danger":
+                query = query.filter(Report.reason.overlap(DANGER_CLASS_NAME_LIST))
+            case "ppe":
+                query = query.filter(Report.reason.overlap(PPE_CLASS_NAME_LIST))
+    elif reasons:
+        query = query.filter(Report.reason.overlap(reasons))
 
     if start is not None:
         query = query.filter(Report.timestamp >= start)
@@ -131,4 +144,5 @@ def get_chart(start: datetime, end: datetime, db: Session) -> List:
                 GROUP BY formatted_date ORDER BY formatted_date"""
     )
     result = db.execute(sql)
+
     return [report._asdict() for report in result.all()]
