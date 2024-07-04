@@ -15,12 +15,16 @@ def get_all(
     """Get all cameras. Filter are optional."""
 
     query = db.query(Camera)
+
     if name:
         query = query.filter(Camera.name.ilike(f"%{name}%"))
+
     if tags:
         query = query.filter(Camera.tags.overlap(tags))
+
     if active is not None:
         query = query.filter(Camera.active == active)
+
     return query.all()
 
 
