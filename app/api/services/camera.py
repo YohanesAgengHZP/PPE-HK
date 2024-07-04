@@ -18,7 +18,7 @@ def get_all(
     if name:
         query = query.filter(Camera.name.ilike(f"%{name}%"))
     if tags:
-        query = query.filter(Camera.tags.any(str(tags)))
+        query = query.filter(Camera.tags.overlap(tags))
     if active is not None:
         query = query.filter(Camera.active == active)
     return query.all()
