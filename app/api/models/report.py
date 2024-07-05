@@ -20,6 +20,7 @@ class ReportResponse(ReportBase):
 
 
 class ReportCreate(BaseModel):
+    timestamp: datetime
     reason: List[str]
     image_url: Optional[str]
     camera_name: str

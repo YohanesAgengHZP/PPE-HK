@@ -48,6 +48,7 @@ async def get_report(report_id: int, db: Session = Depends(get_db)):
 @router.post("", status_code=201, response_model=ReportResponse)
 async def create_report(new_report: ReportCreate, db: Session = Depends(get_db)):
     report = Report()
+    report.timestamp = new_report.timestamp
     report.reason = new_report.reason
     report.image_url = new_report.image_url
     report.camera_name = new_report.camera_name
