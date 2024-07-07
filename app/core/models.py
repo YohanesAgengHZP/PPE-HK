@@ -203,22 +203,16 @@ class Report(Base):
         nullable=False,
         doc="Camera name where the violation is captured",
     )
-    notes: Mapped[str] = mapped_column(
+    notes: Mapped[Optional[str]] = mapped_column(
         Text,
-        nullable=False,
-        server_default=text("''::text"),
         doc="Notes for the violation",
     )
-    person_responsible: Mapped[str] = mapped_column(
+    person_responsible: Mapped[Optional[str]] = mapped_column(
         Text,
-        nullable=False,
-        server_default=text("''::text"),
         doc="Name of the person responsible for handling the violation",
     )
-    is_closed: Mapped[bool] = mapped_column(
+    is_closed: Mapped[Optional[bool]] = mapped_column(
         Boolean,
-        nullable=False,
-        server_default=text("false"),
         doc="Status for the vilation",
     )
     num_of_people: Mapped[Optional[int]] = mapped_column(
