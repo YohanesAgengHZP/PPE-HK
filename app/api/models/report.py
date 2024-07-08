@@ -8,11 +8,11 @@ class ReportBase(BaseModel):
     reason: List[str]
     image_url: str
     camera_name: str
-    notes: str
-    person_responsible: str
-    is_closed: bool
-    num_of_people: int
-    people_without_ppe_id: List[str]
+    notes: Optional[str]
+    person_responsible: Optional[str]
+    is_closed: Optional[bool]
+    num_of_people: Optional[int]
+    people_without_ppe_id: Optional[List[str]]
 
 
 class ReportResponse(ReportBase):
