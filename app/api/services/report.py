@@ -1,7 +1,8 @@
 from datetime import datetime
 from fastapi import HTTPException
+from re import sub
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import text
+from sqlalchemy.sql import func, text
 from typing import List, Literal, Union
 from uuid import UUID
 
@@ -92,57 +93,36 @@ def update(report_id: UUID, updated_report: Report, db: Session) -> Report:
     return updated_report
 
 
-# TODO: Change the raw sql statement to ORM
-def get_chart(start: datetime, end: datetime, db: Session) -> List:
+def get_chart(
+    start: Union[datetime, None],
+    end: Union[datetime, None],
+    db: Session,
+) -> List:
     """Get all report as a chart data."""
 
-    # subquery = (
-    #     db.query(
-    #         func.to_char(Report.timestamp, "dd").label("formatted_date"),
-    #         func.unnest(Report.reason).label("reason"),
-    #     )
-    #     .filter(Report.timestamp.between(start, end))
-    #     .subquery("subquery")
-    # )
-    # return (
-    #     db.query(
-    #         "formatted_date",
-    #         func.sum(
-    #             case(
-    #                 (func.lower(Report.reason).like("%no-hardhat%"), 1),
-    #                 else_=0,
-    #             )
-    #         ).label("no_hardhat_count"),
-    #         func.sum(
-    #             case(
-    #                 (func.lower(Report.reason).like("%no-safety shoe%"), 1),
-    #                 else_=0,
-    #             )
-    #         ).label("no_safety_shoe_count"),
-    #         func.sum(
-    #             case(
-    #                 (func.lower(Report.reason).like("%no-safety vest%"), 1),
-    #                 else_=0,
-    #             )
-    #         ).label("no_safety_vest_count"),
-    #     )
-    #     .from_statement(subquery)
-    #     .group_by("formatted_date")
-    #     .order_by("formatted_date")
-    #     .all()
-    # )
-    sql = text(
-        f"""SELECT formatted_date,
-                SUM(CASE WHEN lower(reason) LIKE '%no-hardhat%' THEN 1 ELSE 0 END) AS no_hardhat_count,
-                SUM(CASE WHEN lower(reason) LIKE '%no-safety shoe%' THEN 1 ELSE 0 END) AS no_safety_shoe_count,
-                SUM(CASE WHEN lower(reason) LIKE '%no-safety vest%' THEN 1 ELSE 0 END) AS no_safety_vest_count
-                FROM (
-                    SELECT TO_CHAR("timestamp"::date, 'dd') AS formatted_date, unnest(reason) AS reason
-                    FROM reporting
-                    WHERE date("timestamp") BETWEEN '{start}' and '{end}'
-                ) AS subquery
-                GROUP BY formatted_date ORDER BY formatted_date"""
+    query = db.query(
+        func.DATE(Report.timestamp),
+        func.unnest(Report.reason),
+        func.count(Report.reason),
     )
-    result = db.execute(sql)
 
-    return [report._asdict() for report in result.all()]
+    if start:
+        query = query.filter(Report.timestamp >= start)
+
+    if end:
+        query = query.filter(Report.timestamp <= end)
+
+    result = (
+        query.group_by(func.DATE(Report.timestamp), Report.reason)
+        .order_by(func.DATE(Report.timestamp), Report.reason)
+        .all()
+    )
+
+    charts = {}
+    for row in result:
+        reason_name: str = sub("[-\s]", "_", row[1]).lower()
+        reasons: dict = charts.get(row[0], {})
+        reasons[reason_name] = row[2]
+        charts[row[0]] = reasons
+
+    return [{key: value} for key, value in charts.items()]
