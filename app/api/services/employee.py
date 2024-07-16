@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Union
 from uuid import UUID
 
 from core.models import Employee
@@ -15,7 +15,7 @@ def get_all(db: Session) -> List[Employee]:
 def get_by_id(employee_id: UUID, db: Session) -> Employee:
     """Get an employee by ID."""
 
-    employee: Employee = db.query(Employee).get(employee_id)
+    employee: Union[Employee, None] = db.query(Employee).get(employee_id)
 
     if not employee:
         raise HTTPException(
@@ -39,27 +39,15 @@ def create(employee: Employee, db: Session) -> UUID:
 def update(employee_id: UUID, updated_employee: Employee, db: Session) -> Employee:
     """Update an employee."""
 
-    current_employee = db.query(Employee).get(employee_id)
+    current_employee = get_by_id(employee_id, db)
 
-    if not current_employee:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Employee with ID {employee_id} not found",
-        )
-
-    return updated_employee
+    return current_employee
 
 
 def delete(employee_id: UUID, db: Session) -> None:
     """Delete an employee."""
 
-    employee = db.query(Employee).get(employee_id)
-
-    if not employee:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Employee with ID {employee_id} not found",
-        )
+    employee = get_by_id(employee_id, db)
 
     db.delete(employee)
     db.commit()

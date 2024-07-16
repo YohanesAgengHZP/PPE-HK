@@ -31,7 +31,7 @@ def get_all(
 def get_by_id(camera_id: UUID, db: Session) -> Camera:
     """Get camera by ID."""
 
-    camera: Camera = db.query(Camera).get(camera_id)
+    camera: Union[Camera, None] = db.query(Camera).get(camera_id)
 
     if not camera:
         raise HTTPException(
@@ -56,12 +56,6 @@ def update(camera_id: UUID, updated_camera: Camera, db: Session) -> Camera:
 
     current_camera = get_by_id(camera_id, db)
 
-    if not current_camera:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Camera with ID {camera_id} not found",
-        )
-
     current_camera.name = updated_camera.name
     current_camera.url = updated_camera.url
     current_camera.active = updated_camera.active
@@ -75,13 +69,7 @@ def update(camera_id: UUID, updated_camera: Camera, db: Session) -> Camera:
 def delete(camera_id: UUID, db: Session) -> None:
     """Delete a camera."""
 
-    camera = db.query(Camera).get(camera_id)
-
-    if not camera:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Camera with ID {camera_id} not found",
-        )
+    camera = get_by_id(camera_id, db)
 
     db.delete(camera)
     db.commit()

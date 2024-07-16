@@ -53,7 +53,7 @@ def get_all(
 def get_by_id(report_id: int, db: Session) -> Report:
     """Get report by ID."""
 
-    report: Report = db.query(Report).get(report_id)
+    report: Union[Report, None] = db.query(Report).get(report_id)
 
     if not report:
         raise HTTPException(
@@ -77,12 +77,6 @@ def update(report_id: UUID, updated_report: Report, db: Session) -> Report:
     """Update a report."""
 
     current_report = get_by_id(report_id, db)
-
-    if not current_report:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Report with ID {report_id} not found",
-        )
 
     current_report.notes = updated_report.notes
     current_report.person_responsible = updated_report.person_responsible
