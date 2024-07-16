@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import HTTPException
 from re import sub
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import func, text
+from sqlalchemy.sql import func
 from typing import List, Literal, Union
 from uuid import UUID
 
@@ -90,7 +90,7 @@ def update(report_id: UUID, updated_report: Report, db: Session) -> Report:
     db.add(current_report)
     db.commit()
 
-    return updated_report
+    return current_report
 
 
 def get_chart(
