@@ -1,4 +1,4 @@
-from fastapi import APIRouter, WebSocket, Depends
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List, Union
 from uuid import UUID
@@ -12,12 +12,9 @@ from api.models.camera import (
 )
 from api.services.camera import get_all, get_by_id, create, update, delete
 from core.models import Camera
-from library.kafka_consumer_lib import consume_messages
 
 
 router = APIRouter(prefix="/camera", tags=["Camera"])
-
-websocket_connections = set()
 
 
 @router.get("", response_model=List[CameraResponse])
@@ -76,17 +73,3 @@ async def update_camera_active_status(
     update(camera_id, camera, db)
 
     return None
-
-
-@router.websocket("/{camera_id}")
-async def camera_feed(camera_id: str, websocket: WebSocket):
-    await websocket.accept()
-
-    websocket_connections.add((camera_id, websocket))
-
-    try:
-        await consume_messages(camera_id, websocket_connections)
-    except Exception as e:
-        print(f"Error in camera feed websocket: {e}")
-    finally:
-        websocket_connections.remove((camera_id, websocket))
