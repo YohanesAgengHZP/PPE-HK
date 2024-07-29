@@ -194,8 +194,9 @@ class Report(Base):
         server_default=text("'{}'::text[]"),
         doc="Reason of the violation",
     )
-    image_url: Mapped[Optional[str]] = mapped_column(
+    image_url: Mapped[str] = mapped_column(
         Text,
+        nullable=False,
         doc="URL of the image when violation occured",
     )
     camera_name: Mapped[str] = mapped_column(

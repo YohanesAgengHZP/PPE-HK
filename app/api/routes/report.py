@@ -1,3 +1,5 @@
+import os
+
 from datetime import datetime
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -5,7 +7,14 @@ from typing import List, Literal, Union
 
 from api.dependencies import get_db
 from api.models.report import ReportCreate, ReportResponse, ReportUpdate
-from api.services.report import get_all, get_by_id, get_chart, create, update
+from api.services.report import (
+    get_all,
+    get_by_id,
+    get_chart,
+    create,
+    save_image,
+    update,
+)
 from core.models import Report
 
 
@@ -50,10 +59,14 @@ async def create_report(new_report: ReportCreate, db: Session = Depends(get_db))
     report = Report()
     report.timestamp = new_report.timestamp
     report.reason = new_report.reason
-    report.image_url = new_report.image_url
     report.camera_name = new_report.camera_name
     report.num_of_people = new_report.num_of_people
     report.people_without_ppe_id = new_report.people_without_ppe_id
+
+    image_url = os.path.join("static", new_report.image.filename)
+    report.image_url = image_url
+
+    save_image(new_report.image.file_base64, new_report.image.filename)
 
     return create(report, db)
 

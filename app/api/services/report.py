@@ -1,3 +1,8 @@
+import aiofiles
+import binascii
+import os
+
+from base64 import b64decode
 from datetime import datetime
 from fastapi import HTTPException
 from re import sub
@@ -7,6 +12,7 @@ from typing import List, Literal, Union
 from uuid import UUID
 
 from core.models import Report
+from core.settings import STATIC_ROOT
 
 
 PPE_CLASS_NAME_LIST = ["NO-Hardhat", "NO-Safety Shoes", "NO-Safety Vest"]
@@ -120,3 +126,23 @@ def get_chart(
         charts[row[0]] = reasons
 
     return [{key: value} for key, value in charts.items()]
+
+
+async def save_image(image_base64: str, filename: str) -> None:
+    """Decode base64 image and save to static folder"""
+
+    try:
+        image_content = b64decode(image_base64.encode("utf-8"))
+        filepath = os.path.join(STATIC_ROOT, filename)
+        async with aiofiles.open(filepath, "wb") as out_file:
+            await out_file.write(image_content)
+    except binascii.Error:
+        raise HTTPException(
+            status_code=400,
+            detail="There was an error decoding the base64 string",
+        )
+    except Exception:
+        raise HTTPException(
+            status_code=500,
+            detail="There was an error uploading the file(s)",
+        )
