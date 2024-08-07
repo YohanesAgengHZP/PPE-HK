@@ -63,10 +63,11 @@ async def create_report(new_report: ReportCreate, db: Session = Depends(get_db))
     report.num_of_people = new_report.num_of_people
     report.people_without_ppe_id = new_report.people_without_ppe_id
 
-    image_url = os.path.join("static", new_report.image.filename)
+    current_date = str(datetime.now().date())
+    image_url = os.path.join("static", current_date, new_report.image.filename)
     report.image_url = image_url
 
-    save_image(new_report.image.file_base64, new_report.image.filename)
+    save_image(new_report.image.file_base64, new_report.image.filename, current_date)
 
     return create(report, db)
 

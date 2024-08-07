@@ -128,12 +128,15 @@ def get_chart(
     return [{key: value} for key, value in charts.items()]
 
 
-async def save_image(image_base64: str, filename: str) -> None:
+async def save_image(image_base64: str, filename: str, current_date: str) -> None:
     """Decode base64 image and save to static folder"""
 
     try:
         image_content = b64decode(image_base64.encode("utf-8"))
-        filepath = os.path.join(STATIC_ROOT, filename)
+        folder_path = os.path.join(STATIC_ROOT, current_date)
+        if not os.path.isdir(folder_path):
+            os.makedirs(folder_path)
+        filepath = os.path.join(folder_path, filename)
         async with aiofiles.open(filepath, "wb") as out_file:
             await out_file.write(image_content)
     except binascii.Error:
