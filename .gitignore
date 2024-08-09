@@ -161,3 +161,6 @@ cython_debug/
 
 *.rest
 *.DS_Store
+
+# Static folder
+app/static
