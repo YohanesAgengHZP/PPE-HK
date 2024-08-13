@@ -1,3 +1,5 @@
+import os
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
@@ -5,7 +7,14 @@ from uuid import UUID
 
 from api.dependencies import get_db
 from api.models.employee import EmployeeCreate, EmployeeResponse, EmployeeUpdate
-from api.services.employee import get_all, get_by_id, create, update, delete
+from api.services.employee import (
+    get_all,
+    get_by_id,
+    create,
+    update,
+    delete,
+    save_photo,
+)
 from core.models import Employee
 
 
@@ -28,7 +37,9 @@ async def create_employee(new_employee: EmployeeCreate, db: Session = Depends(ge
     employee.name = new_employee.name
     employee.company = new_employee.company
     employee.mcu = new_employee.mcu
-    employee.photo = new_employee.photo
+    employee.photo = os.path.join("static", "ID", new_employee.photo.filename)
+
+    await save_photo(new_employee.photo.file_base64, new_employee.photo.filename)
 
     return create(employee, db)
 

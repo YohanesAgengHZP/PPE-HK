@@ -12,8 +12,8 @@ from api.services.report import (
     get_by_id,
     get_chart,
     create,
-    save_image,
     update,
+    save_image,
 )
 from core.models import Report
 
@@ -67,7 +67,11 @@ async def create_report(new_report: ReportCreate, db: Session = Depends(get_db))
     image_url = os.path.join("static", current_date, new_report.image.filename)
     report.image_url = image_url
 
-    await save_image(new_report.image.file_base64, new_report.image.filename, current_date)
+    await save_image(
+        new_report.image.file_base64,
+        new_report.image.filename,
+        current_date,
+    )
 
     return create(report, db)
 

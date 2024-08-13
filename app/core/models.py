@@ -76,7 +76,7 @@ class Employee(Base):
     - name: Name of the employee
     - company: Company where the employee is currently working
     - mcu: Employee active medical check up status
-    - photo: Employee photo
+    - photo: URL of the employee photo
     """
 
     __tablename__ = "employee"
@@ -121,7 +121,7 @@ class EmployeeAttendance(Base):
     - id: Attendance ID
     - employee_id: The employee ID
     - time: Employee attendance date time
-    - photo: Photo taken when employee has start or leave work
+    - photo: URL of the photo taken when employee has start or leave work
     - work_status: Work status, true for start work and false for leave work
     """
 
