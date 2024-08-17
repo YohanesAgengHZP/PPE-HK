@@ -1,3 +1,5 @@
+import os
+
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Union
@@ -35,13 +37,35 @@ def create(employee: Employee, db: Session) -> UUID:
     return employee
 
 
-# TODO: Implement the update function
 def update(employee_id: UUID, updated_employee: Employee, db: Session) -> Employee:
     """Update an employee."""
 
     current_employee = get_by_id(employee_id, db)
 
-    return current_employee
+    if updated_employee.name is not None:
+        current_employee.name = updated_employee.name
+    else:
+        updated_employee.name = current_employee.name
+
+    if updated_employee.company is not None:
+        current_employee.company = updated_employee.company
+    else:
+        updated_employee.company = current_employee.company
+
+    if updated_employee.mcu is not None:
+        current_employee.mcu = updated_employee.mcu
+    else:
+        updated_employee.mcu = current_employee.mcu
+
+    if updated_employee.photo is not None:
+        current_employee.photo = updated_employee.photo
+    else:
+        updated_employee.photo = current_employee.photo
+
+    db.add(current_employee)
+    db.commit()
+
+    return updated_employee
 
 
 def delete(employee_id: UUID, db: Session) -> None:

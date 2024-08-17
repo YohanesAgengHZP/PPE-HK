@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 from uuid import UUID
 
 from api.models.common import Base64File
@@ -19,5 +20,8 @@ class EmployeeCreate(EmployeeBase):
     photo: Base64File
 
 
-class EmployeeUpdate(EmployeeBase):
-    pass
+class EmployeeUpdate(BaseModel):
+    name: Optional[str]
+    company: Optional[str]
+    mcu: Optional[bool]
+    photo: Optional[Base64File]
