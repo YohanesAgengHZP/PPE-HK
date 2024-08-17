@@ -8,17 +8,14 @@ class EmployeeBase(BaseModel):
     name: str
     company: str
     mcu: bool
-    photo_url: str
+    photo: str
 
 
 class EmployeeResponse(EmployeeBase):
     id: UUID
 
 
-class EmployeeCreate(BaseModel):
-    name: str
-    company: str
-    mcu: bool
+class EmployeeCreate(EmployeeBase):
     photo: Base64File
 
 

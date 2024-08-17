@@ -7,14 +7,8 @@ from typing import List, Literal, Union
 
 from api.dependencies import get_db
 from api.models.report import ReportCreate, ReportResponse, ReportUpdate
-from api.services.report import (
-    get_all,
-    get_by_id,
-    get_chart,
-    create,
-    update,
-    save_image,
-)
+from api.services.common import save_file
+from api.services.report import get_all, get_by_id, get_chart, create, update
 from core.models import Report
 
 
@@ -67,7 +61,7 @@ async def create_report(new_report: ReportCreate, db: Session = Depends(get_db))
     image_url = os.path.join("static", current_date, new_report.image.filename)
     report.image_url = image_url
 
-    await save_image(
+    await save_file(
         new_report.image.file_base64,
         new_report.image.filename,
         current_date,
