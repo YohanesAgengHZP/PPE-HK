@@ -2,6 +2,8 @@ from datetime import datetime
 from pydantic import BaseModel
 from uuid import UUID
 
+from api.models.common import Base64File
+
 
 class AttendanceBase(BaseModel):
     employee_id: UUID
@@ -15,6 +17,5 @@ class AttendanceResponse(AttendanceBase):
     id: int
 
 
-# TODO: Remove after testing
 class AttendanceCreate(AttendanceBase):
-    pass
+    photo: Base64File
