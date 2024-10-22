@@ -24,7 +24,7 @@ async def get_all_camera(
     active: Union[bool, None] = None,
     db: Session = Depends(get_db),
 ):
-    tag_array = tags.split(",") if tags else None
+    tag_array = [tag.strip() for tag in tags.split(",")] if tags else None
     return get_all(name, tag_array, active, db)
 
 

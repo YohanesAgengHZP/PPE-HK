@@ -17,11 +17,12 @@ router = APIRouter(prefix="/report", tags=["Report"])
 
 @router.get(
     "",
-    description="Get all reports. Type are prioritized over reasons.",
+    description="Get all reports. Type are prioritized over reasons. Can filter based on list of camera tags.",
     response_model=List[ReportResponse],
 )
 async def get_all_report(
     type: Union[Literal["ppe", "animal", "danger"] | None] = None,
+    tags: Union[str, None] = None,
     reasons: Union[str, None] = None,
     start: Union[datetime, None] = None,
     end: Union[datetime, None] = None,
@@ -29,8 +30,11 @@ async def get_all_report(
     page: int = 1,
     db: Session = Depends(get_db),
 ):
-    reason_array = reasons.split(",") if reasons else None
-    return get_all(type, reason_array, start, end, limit, page, db)
+    tag_array = [tag.strip() for tag in tags.split(",")] if tags else None
+    reason_array = (
+        [reason.strip() for reason in reasons.split(",")] if reasons else None
+    )
+    return get_all(type, tag_array, reason_array, start, end, limit, page, db)
 
 
 # TODO: Add response_model

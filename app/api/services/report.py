@@ -6,7 +6,8 @@ from sqlalchemy.sql import func
 from typing import List, Literal, Union
 from uuid import UUID
 
-from core.models import Report
+from api.services.camera import get_all as get_all_camera
+from core.models import Camera, Report
 
 
 PPE_CLASS_NAME_LIST = ["NO-Hardhat", "NO-Safety Shoes", "NO-Safety Vest"]
@@ -15,6 +16,7 @@ DANGER_CLASS_NAME_LIST = ["Fire", "Puddle", "Smoke", "Smoking"]
 
 def get_all(
     type: Union[Literal["ppe", "animal", "danger"] | None],
+    tags: Union[List[str], None],
     reasons: Union[List[str], None],
     start: Union[datetime, None],
     end: Union[datetime, None],
@@ -22,9 +24,16 @@ def get_all(
     page: int,
     db: Session,
 ) -> List[Report]:
-    """Get all reports. Filter are optional. Type are prioritized over reasons."""
+    """
+    Get all reports. Filter are optional. Type are prioritized over reasons.
 
-    query = db.query(Report)
+    Can filter based on list of camera tags.
+    """
+
+    query = db.query(Report).join(Camera, Report.camera_name == Camera.name)
+
+    if tags:
+        query = query.filter(Camera.tags.overlap(tags))
 
     if type:
         match type:
@@ -42,6 +51,12 @@ def get_all(
 
     if end is not None:
         query = query.filter(Report.timestamp <= end)
+
+    if limit <= 0:
+        limit = 10
+
+    if page <= 0:
+        page = 1
 
     query = (
         query.order_by(Report.timestamp.desc()).limit(limit).offset((page - 1) * limit)
