@@ -31,7 +31,7 @@ def get_all(
     Can filter based on list of camera tags.
 
     Returns:
-        results (Tuple[int, List[Report]]): a tuple of total number of records and the results per page.
+        results (Tuple[int, List[Report]]): Tuple of total number of records and the results per page.
     """
 
     count_query = db.query(func.count(Report.id)).join(
@@ -74,14 +74,14 @@ def get_all(
         page = 1
 
     count = count_query.scalar()
-    result = (
+    results = (
         query.order_by(Report.timestamp.desc())
         .limit(limit)
         .offset((page - 1) * limit)
         .all()
     )
 
-    return count, result
+    return count, results
 
 
 def get_by_id(report_id: int, db: Session) -> Report:
@@ -154,9 +154,3 @@ def get_chart(
         charts[row[0]] = reasons
 
     return [{key: value} for key, value in charts.items()]
-
-
-def count_all(db: Session) -> int:
-    """Count all records."""
-
-    return db.query(func.count(Report.id)).scalar()

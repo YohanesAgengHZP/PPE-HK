@@ -4,6 +4,9 @@ import os
 
 from base64 import b64decode
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
+from typing import Any
 
 from core.settings import STATIC_ROOT
 
@@ -63,3 +66,18 @@ async def delete_file(filename: str, dir_path: str) -> None:
             status_code=500,
             detail="There was an error deleting the file",
         )
+
+
+def count_all(id_column: Any, db: Session) -> int:
+    """
+    Count all records of a table.
+
+    Args:
+        id_column (Any): ID column of the table.
+        db (Session): Directory path relative to the static folder.
+
+    Returns:
+        total (int): Total number of records.
+    """
+
+    return db.query(func.count(id_column)).scalar()

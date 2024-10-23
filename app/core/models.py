@@ -17,6 +17,9 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from typing import List, Optional
 
 
+DEFAULT_ARRAY_TEXT = "'{}'::text[]"
+
+
 class Base(DeclarativeBase):
     pass
 
@@ -59,7 +62,7 @@ class Camera(Base):
     )
     tags: Mapped[List[str]] = mapped_column(
         ARRAY(Text),
-        server_default=text("'{}'::text[]"),
+        server_default=text(DEFAULT_ARRAY_TEXT),
         doc="Tags that are assigned to the camera",
     )
 
@@ -123,6 +126,7 @@ class EmployeeAttendance(Base):
     - time: Employee attendance date time
     - photo: URL of the photo taken when employee has start or leave work
     - work_status: Work status, true for start work and false for leave work
+    - camera_name: Camera name where the attendance is captured
     """
 
     __tablename__ = "employee_attendance"
@@ -150,6 +154,11 @@ class EmployeeAttendance(Base):
         nullable=False,
         server_default=text("true"),
         doc="Work status, true for start work and false for leave work",
+    )
+    camera_name: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        doc="Camera name where the attendance is captured",
     )
 
     def __repr__(self) -> str:
@@ -191,7 +200,7 @@ class Report(Base):
     reason: Mapped[List[str]] = mapped_column(
         ARRAY(Text),
         nullable=False,
-        server_default=text("'{}'::text[]"),
+        server_default=text(DEFAULT_ARRAY_TEXT),
         doc="Reason of the violation",
     )
     image_url: Mapped[str] = mapped_column(
@@ -224,3 +233,8 @@ class Report(Base):
         ARRAY(Text),
         doc="ID of the people doing violation",
     )
+
+    def __repr__(self):
+        time_format = "%d %b %Y %H:%M:%S"
+        timestamp = datetime.strftime(self.timestamp, time_format)
+        return f"Report(id={self.id!r}, timestamp={timestamp!r}, reason={self.reason!r}, image_url={self.image_url!r}, camera_name={self.camera_name!r})"

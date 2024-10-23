@@ -24,7 +24,7 @@ class ReportResponse(ReportBase):
 class ReportAllResponse(BaseModel):
     total_records: int
     filter_records: int
-    result: List[ReportResponse]
+    results: List[ReportResponse]
 
 
 class ReportCreate(BaseModel):
