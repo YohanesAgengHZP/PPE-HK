@@ -3,12 +3,17 @@ import os
 from datetime import datetime
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import List, Literal, Union
+from typing import Literal, Union
 
 from api.dependencies import get_db
-from api.models.report import ReportCreate, ReportResponse, ReportUpdate
+from api.models.report import (
+    ReportAllResponse,
+    ReportCreate,
+    ReportResponse,
+    ReportUpdate,
+)
 from api.services.common import save_file
-from api.services.report import get_all, get_by_id, get_chart, create, update
+from api.services.report import count_all, get_all, get_by_id, get_chart, create, update
 from core.models import Report
 
 
@@ -18,10 +23,10 @@ router = APIRouter(prefix="/report", tags=["Report"])
 @router.get(
     "",
     description="Get all reports. Type are prioritized over reasons. Can filter based on list of camera tags.",
-    response_model=List[ReportResponse],
+    response_model=ReportAllResponse,
 )
 async def get_all_report(
-    type: Union[Literal["ppe", "animal", "danger"] | None] = None,
+    type: Union[Literal["ppe", "danger"] | None] = None,
     tags: Union[str, None] = None,
     reasons: Union[str, None] = None,
     start: Union[datetime, None] = None,
@@ -34,7 +39,13 @@ async def get_all_report(
     reason_array = (
         [reason.strip() for reason in reasons.split(",")] if reasons else None
     )
-    return get_all(type, tag_array, reason_array, start, end, limit, page, db)
+    count, result = get_all(type, tag_array, reason_array, start, end, limit, page, db)
+
+    return {
+        "total_records": count_all(db),
+        "filter_records": count,
+        "result": result,
+    }
 
 
 # TODO: Add response_model

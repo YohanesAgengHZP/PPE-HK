@@ -21,6 +21,12 @@ class ReportResponse(ReportBase):
     id: int
 
 
+class ReportAllResponse(BaseModel):
+    total_records: int
+    filter_records: int
+    result: List[ReportResponse]
+
+
 class ReportCreate(BaseModel):
     timestamp: datetime
     reason: List[str]
